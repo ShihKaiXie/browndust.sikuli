@@ -70,114 +70,126 @@
 <h2>test.sikuli</h2> <a href="test.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
+<span class="kw">from</span> javax.swing <span class="kw">import</span> JFrame, JLabel, JButton, JTextField, JTextArea, JScrollPane
+<span class="kw">from</span> java.awt <span class="kw">import</span> FlowLayout
+<span class="kw">from</span> java.awt <span class="kw">import</span> *
+
 <span class="kw">import</span> time
-flag=<span class="dig">1</span>
-ticks = time.time()
-date=time.strftime(<span class="str">"%Y_%m_%d_%H_%M_%S"</span>, time.localtime(ticks))+<span class="str">'_日誌'</span>
-f = open(date+<span class="str">'.txt'</span>,<span class="str">'w'</span>,<span class="dig">0</span>)
+<span class="kw">import</span> sys
+
+
+<span class="kw">def</span> initial():
+    <span class="kw">global</span> flag
+    <span class="kw">global</span> ticks
+    <span class="kw">global</span> f
+    <span class="kw">global</span> txt
+    reload(sys)
+    sys.setdefaultencoding(<span class="str">'utf-8'</span>)
+    flag=<span class="dig">1</span>
+    ticks = time.time()
+    date=time.strftime(<span class="str">"%Y_%m_%d_%H_%M_%S"</span>, time.localtime(ticks))+<span class="str">'_日誌'</span>
+    f = open(date+<span class="str">'.txt'</span>,<span class="str">'w'</span>,<span class="dig">0</span>)
+
+    frame = JFrame(<span class="str">"Log"</span>)
+    txt = JTextArea(<span class="dig">19</span>,<span class="dig">55</span>)
+    scrollPane=JScrollPane(txt);
+    <span class="cmt">##frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)</span>
+    frame.setLocation(<span class="dig">2000</span>,<span class="dig">100</span>)
+    frame.setSize(<span class="dig">450</span>,<span class="dig">450</span>)
+    frame.setLayout(FlowLayout())
+    <span class="cmt">##label = JLabel('記錄:')</span>
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    <span class="cmt">##frame.add(label)</span>
+    frame.add(scrollPane)
+    frame.setVisible(True)
+
+
+
+
+<span class="kw">def</span> log_add(x):
+    ticks = time.time()
+    txt.append(time.strftime(<span class="str">"%Y/%m/%d %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;'</span>+unicode(x, encoding=<span class="str">'utf-8'</span>)+<span class="str">'\n'</span>)
+    txt.setCaretPosition(txt.getDocument().getLength());
+    f.write(time.strftime(<span class="str">"%Y/%m/%d %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;'</span>+x+<span class="str">'\n'</span>)
+    f.flush
+
 <span class="kw">def</span> set_flag(x):
     <span class="kw">global</span> flag
     flag=x;
-    <span class="kw">print</span> flag
 
 <span class="kw">def</span> Adventure_mode():<span class="cmt">##冒險模式</span>
     ticks = time.time()
     <span class="kw">if</span> exists(<img src="1540537145861.png" />): <span class="cmt">##主畫面的最近戰役</span>
         <span class="skw">click</span>(<img src="1540537154537.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:主畫面點擊進入最近戰役\n'</span>)
-        f.flush
+        log_add(<span class="str">'冒險模式:主畫面點擊進入最近戰役'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1540537271505.png" />):
         <span class="skw">click</span>(<img src="1540537277742.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:入場\n'</span>)
-        f.flush
+        log_add(<span class="str">'冒險模式:入場'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540542965316.png" />).exact()):
         <span class="skw">click</span>(<img src="1540542977160.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:點選戰鬥開始\n'</span>)
-        f.flush
+        log_add(<span class="str">'冒險模式:點選戰鬥開始'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(Pattern(<img src="1540538755053.png" />).exact()):
         <span class="skw">click</span>(<img src="1540538760800.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:冒險模式對戰完畢,再次對戰\n'</span>)
-        f.flush
+        log_add(<span class="str">'冒險模式:冒險模式對戰完畢,再次對戰'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540543360197.png" />).exact()):
         <span class="skw">click</span>(<img src="1540543395770.png" />)
-        <span class="skw">click</span>(<img src="1540543456633.png" />)
-        set_flag(<span class="dig">1</span>)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:馬蹄耗盡,變更競技場模式\n'</span>)
-        f.flush
-        <span class="kw">return</span>
+        <span class="kw">if</span> exists(<img src="1540806249159.png" />):
+
+            <span class="skw">click</span>(<img src="1540543456633.png" />)
+            set_flag(<span class="dig">1</span>)
+            log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
+            <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1540562330551.png" />):
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:冒險模式對戰進行中\n'</span>)
-        f.flush
+        log_add(<span class="str">'冒險模式:冒險模式對戰進行中'</span>)
         <span class="kw">return</span>
 
     <span class="kw">else</span>:
         <span class="skw">type</span>(Key.ESC)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;冒險模式:無法辨識,回上步驟\n'</span>)
-        f.flush
-
-
-
-
-
-
+        log_add(<span class="str">'冒險模式:無法辨識,回上步驟'</span>)
 
 
 <span class="kw">def</span> Arena_mode():  <span class="cmt">##競技場模式 </span>
     ticks = time.time()
     <span class="kw">if</span> exists(Pattern(<img src="1540601955210.png" />).exact()):
         <span class="skw">click</span>(<img src="1540601960789.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:主畫面點擊進入對戰\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:主畫面點擊進入對戰'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(<img src="1540521286397.png" />): <span class="cmt">##對決找決鬥場##</span>
         <span class="skw">click</span>(<img src="1540521291914.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:點選對戰的競技場\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:點選對戰的競技場'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540545300325.png" />).exact()):
         <span class="skw">sleep</span>(<span class="dig">10</span>)
         <span class="skw">click</span>(<img src="1540545324733.png" />)
         set_flag(<span class="dig">2</span>)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:指揮劍耗盡,更改為新星競技場模式\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:指揮劍耗盡,更改為新星競技場模式'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(Pattern(<img src="1540543619349.png" />).exact()):
         <span class="skw">click</span>(<img src="1540770795698.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:競技場內點選開始攻擊\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:競技場內點選開始攻擊'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540543934058.png" />).exact()):
         <span class="skw">click</span>(<img src="1540543940947.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:競技場對戰完畢,再次對戰\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:競技場對戰完畢,再次對戰'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1540544965399.png" />):
         <span class="skw">click</span>(<img src="1540544972728.png" />)
         <span class="skw">click</span>(<img src="1540545190674.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:指揮劍不足,回首頁\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:指揮劍不足,回首頁'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1540562330551.png" />):
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:競技場模式對戰進行中\n'</span>)
-        f.flush
+        log_add(<span class="str">'競技場模式:競技場模式對戰進行中'</span>)
         <span class="kw">return</span>
     <span class="kw">else</span>:
         <span class="skw">type</span>(Key.ESC)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;競技場模式:無法辨識,回上步驟\n'</span>)
-        f.flush
-
-
-
-
-
-
+        log_add(<span class="str">'競技場模式:無法辨識,回上步驟'</span>)
 
 
 <span class="kw">def</span> New_star_mode():
@@ -186,63 +198,54 @@ f = open(date+<span class="str">'.txt'</span>,<span class="str">'w'</span>,<span
     <span class="kw">if</span> exists(Pattern(<img src="1540572910287.png" />).exact()):
         <span class="skw">click</span>(<img src="1540683400142.png" />)
 
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:主畫面點擊進入對戰\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:主畫面點擊進入對戰'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(<img src="1540553413359.png" />):
         <span class="skw">click</span>(<img src="1540553419487.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:點選對戰的新星競技場\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:點選對戰的新星競技場'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(Pattern(<img src="1540554945534.png" />).exact()):
         <span class="skw">sleep</span>(<span class="dig">10</span>)
         <span class="skw">click</span>(<img src="1540554971536.png" />)
         set_flag(<span class="dig">0</span>);
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:指揮劍耗盡,更改為冒險模式\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:指揮劍耗盡,更改為冒險模式'</span>)
         <span class="kw">return</span>
 
 
 
     <span class="kw">if</span> exists(<img src="1540553458432.png" />):
         <span class="skw">click</span>(<img src="1540553468356.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:新星競技場內點選開始攻擊\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:新星競技場內點選開始攻擊'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540553630139.png" />).exact()):
         <span class="skw">click</span>(<img src="1540553637628.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:新星競技場對戰完畢,再次對戰\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:新星競技場對戰完畢,再次對戰'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(<img src="1540634388492.png" />):
         <span class="skw">click</span>(<img src="1540634396123.png" />)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:指揮劍不足,回首頁\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:指揮劍不足,回首頁'</span>)
         <span class="kw">return</span>
 
 
 
     <span class="kw">if</span> exists(<img src="1540562330551.png" />):
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:新星競技場對戰進行中\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:新星競技場對戰進行中'</span>)
         <span class="kw">return</span>
     <span class="kw">else</span>:
         <span class="skw">type</span>(Key.ESC)
-        f.write(time.strftime(<span class="str">"%m %d %Y %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;新星競技場模式:無法辨識,回上步驟\n'</span>)
-        f.flush
+        log_add(<span class="str">'新星競技場模式:無法辨識,回上步驟'</span>)
 
 
 
 
-
-
-<span class="kw">while</span> <span class="dig">1</span>:
+<span class="kw">if</span> __name__ == <span class="str">'__main__'</span>:
+    initial()
+    <span class="kw">while</span> <span class="dig">1</span>:
         <span class="kw">global</span> flag
         <span class="kw">print</span> flag
-
         <span class="kw">if</span> flag==<span class="dig">0</span>:
             Adventure_mode();
             <span class="skw">wait</span>(<span class="dig">3.5</span>)
