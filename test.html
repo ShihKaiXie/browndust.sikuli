@@ -76,7 +76,7 @@
 
 <span class="kw">import</span> time
 <span class="kw">import</span> sys
-
+<span class="kw">import</span> random
 
 <span class="kw">def</span> initial():
     <span class="kw">global</span> flag
@@ -95,7 +95,7 @@
     scrollPane=JScrollPane(txt);
     <span class="cmt">##frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)</span>
     frame.setLocation(<span class="dig">2000</span>,<span class="dig">100</span>)
-    frame.setSize(<span class="dig">450</span>,<span class="dig">450</span>)
+    frame.setSize(<span class="dig">480</span>,<span class="dig">450</span>)
     frame.setLayout(FlowLayout())
     <span class="cmt">##label = JLabel('記錄:')</span>
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -117,6 +117,57 @@
     <span class="kw">global</span> flag
     flag=x;
 
+<span class="kw">def</span> Deploy():
+    log_add(<span class="str">'檢查第一隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">294</span>, <span class="dig">502</span>))
+    Change_mercenary(<span class="dig">294</span>, <span class="dig">502</span>)
+    log_add(<span class="str">'檢查第二隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">409</span>, <span class="dig">505</span>))
+    Change_mercenary(<span class="dig">409</span>, <span class="dig">505</span>)
+    log_add(<span class="str">'檢查第三隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">519</span>, <span class="dig">506</span>))
+    Change_mercenary(<span class="dig">519</span>, <span class="dig">506</span>)
+    log_add(<span class="str">'檢查第四隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">635</span>, <span class="dig">506</span>))
+    Change_mercenary(<span class="dig">635</span>, <span class="dig">506</span>)
+    log_add(<span class="str">'檢查第五隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">750</span>, <span class="dig">504</span>))
+    Change_mercenary(<span class="dig">750</span>, <span class="dig">504</span>)
+    log_add(<span class="str">'檢查第六隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">863</span>, <span class="dig">500</span>))
+    Change_mercenary(<span class="dig">863</span>, <span class="dig">500</span>)
+    log_add(<span class="str">'檢查第七隻傭兵'</span>)
+    <span class="skw">click</span>(Location(<span class="dig">269</span>, <span class="dig">608</span>))
+    Change_mercenary(<span class="dig">269</span>, <span class="dig">608</span>)
+
+
+
+
+
+
+
+<span class="kw">def</span> Change_mercenary(x,y):
+    dict={<span class="dig">1</span>:Location(<span class="dig">485</span>, <span class="dig">842</span>),<span class="dig">2</span>:Location(<span class="dig">600</span>, <span class="dig">839</span>),<span class="dig">3</span>:Location(<span class="dig">718</span>, <span class="dig">835</span>),<span class="dig">4</span>:Location(<span class="dig">830</span>, <span class="dig">842</span>),<span class="dig">5</span>:Location(<span class="dig">945</span>, <span class="dig">838</span>),<span class="dig">6</span>:Location(<span class="dig">1057</span>, <span class="dig">839</span>),<span class="dig">7</span>:Location(<span class="dig">1176</span>, <span class="dig">838</span>),<span class="dig">8</span>:Location(<span class="dig">1289</span>, <span class="dig">838</span>),<span class="dig">9</span>:Location(<span class="dig">1407</span>, <span class="dig">837</span>),<span class="dig">10</span>:Location(<span class="dig">1522</span>, <span class="dig">837</span>),<span class="dig">11</span>:Location(<span class="dig">1638</span>, <span class="dig">833</span>)}
+    <span class="kw">if</span> exists(Pattern(<img src="1541266421429.png" />).exact()):
+        <span class="skw">click</span>(Pattern(<img src="1541266425739.png" />).exact())
+
+    <span class="kw">if</span> exists(Pattern(<img src="1541260976063.png" />).similar(<span class="dig">0.52</span>)):
+        <span class="skw">click</span>(<img src="1541261009633.png" />)
+        <span class="skw">click</span>(<img src="1541261041175.png" />)
+        <span class="skw">click</span>(<img src="1541261047593.png" />)
+        <span class="skw">click</span>(<img src="1541261057674.png" />)
+        number=random.randint(<span class="dig">1</span>,<span class="dig">11</span>)
+        <span class="kw">print</span>(number)
+        note=<span class="str">'替換第'</span>+str(number)+<span class="str">'隻新肥料'</span>
+        log_add(note)
+        <span class="skw">click</span>(dict[number])<span class="cmt">##第n隻新肥料</span>
+        <span class="skw">click</span>(Location(x, y))
+        <span class="skw">click</span>(<img src="1541261569467.png" />)
+        <span class="skw">sleep</span>(<span class="dig">1</span>)
+    <span class="kw">if</span> exists(Pattern(<img src="1541266421429.png" />).exact()):
+       <span class="skw">click</span>(Pattern(<img src="1541266425739.png" />).exact())
+
+
 <span class="kw">def</span> Adventure_mode():<span class="cmt">##冒險模式</span>
     ticks = time.time()
     <span class="kw">if</span> exists(<img src="1540537145861.png" />): <span class="cmt">##主畫面的最近戰役</span>
@@ -128,11 +179,18 @@
         log_add(<span class="str">'冒險模式:入場'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540542965316.png" />).exact()):
-        <span class="skw">click</span>(<img src="1540542977160.png" />)
+        Deploy()
+        <span class="skw">click</span>(<img src="1541111918637.png" />)
+
         log_add(<span class="str">'冒險模式:點選戰鬥開始'</span>)
         <span class="kw">return</span>
+    <span class="kw">if</span> exists(Pattern(<img src="1541111878580.png" />).exact()):
+        Deploy()
+        <span class="skw">click</span>(<img src="1541111918637.png" />)
 
-    <span class="kw">if</span> exists(Pattern(<img src="1540538755053.png" />).exact()):
+        log_add(<span class="str">'冒險模式:點選戰鬥開始'</span>)
+        <span class="kw">return</span>
+    <span class="kw">if</span> exists(Pattern(<img src="1540538755053.png" />).similar(<span class="dig">0.75</span>)):
         <span class="skw">click</span>(<img src="1540538760800.png" />)
         log_add(<span class="str">'冒險模式:冒險模式對戰完畢,再次對戰'</span>)
         <span class="kw">return</span>
@@ -144,8 +202,21 @@
             set_flag(<span class="dig">1</span>)
             log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
             <span class="kw">return</span>
-    <span class="kw">if</span> exists(<img src="1540562330551.png" />):
+    <span class="kw">if</span> exists(Pattern(<img src="1541112406348.png" />).exact()):
+        <span class="skw">click</span>(<img src="1540543395770.png" />)
+        <span class="kw">if</span> exists(<img src="1540806249159.png" />):
+
+            <span class="skw">click</span>(<img src="1540543456633.png" />)
+            set_flag(<span class="dig">1</span>)
+            log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
+            <span class="kw">return</span>
+
+
+
+
+    <span class="kw">if</span> exists(Pattern(<img src="1540562330551.png" />).exact()):
         log_add(<span class="str">'冒險模式:冒險模式對戰進行中'</span>)
+        <span class="skw">sleep</span>(<span class="dig">15</span>)
         <span class="kw">return</span>
 
     <span class="kw">else</span>:
@@ -184,7 +255,7 @@
         <span class="skw">click</span>(<img src="1540545190674.png" />)
         log_add(<span class="str">'競技場模式:指揮劍不足,回首頁'</span>)
         <span class="kw">return</span>
-    <span class="kw">if</span> exists(<img src="1540562330551.png" />):
+    <span class="kw">if</span> exists(Pattern(<img src="1540562330551.png" />).exact()):
         log_add(<span class="str">'競技場模式:競技場模式對戰進行中'</span>)
         <span class="kw">return</span>
     <span class="kw">else</span>:
@@ -207,7 +278,7 @@
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(Pattern(<img src="1540554945534.png" />).exact()):
-        <span class="skw">sleep</span>(<span class="dig">10</span>)
+        <span class="skw">sleep</span>(<span class="dig">0</span>)
         <span class="skw">click</span>(<img src="1540554971536.png" />)
         set_flag(<span class="dig">0</span>);
         log_add(<span class="str">'新星競技場模式:指揮劍耗盡,更改為冒險模式'</span>)
@@ -231,7 +302,7 @@
 
 
 
-    <span class="kw">if</span> exists(<img src="1540562330551.png" />):
+    <span class="kw">if</span> exists(Pattern(<img src="1540562330551.png" />).exact()):
         log_add(<span class="str">'新星競技場模式:新星競技場對戰進行中'</span>)
         <span class="kw">return</span>
     <span class="kw">else</span>:
