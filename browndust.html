@@ -67,11 +67,11 @@
    </head>
 <body>
 <div class="info">
-<h2>test.sikuli</h2> <a href="test.zip">(Download this script)</a>
+<h2>browndust.sikuli</h2> <a href="browndust.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
 <span class="cmt">##1.修改冒險模式外的3次返回偵錯機制</span>
-
+<span class="kw">from</span> sikuli <span class="kw">import</span> *
 <span class="kw">from</span> javax.swing <span class="kw">import</span> JFrame, JLabel, JButton, JTextField, JTextArea, JScrollPane
 <span class="kw">from</span> java.awt <span class="kw">import</span> FlowLayout
 <span class="kw">from</span> java.awt <span class="kw">import</span> *
@@ -80,28 +80,25 @@
 <span class="kw">import</span> time
 <span class="kw">import</span> sys
 <span class="kw">import</span> random
-
+<span class="kw">import</span> controller <span class="kw">as</span> ctr
+<span class="cmt">#reload(controller)</span>
+<span class="cmt">#from controller import * </span>
 
 <span class="kw">def</span> initial():
-    <span class="kw">global</span> flag
-    <span class="kw">global</span> reload_check
-    <span class="kw">global</span> world_boss_check
-    <span class="kw">global</span> raid_check
-    <span class="kw">global</span> ticks
-    <span class="kw">global</span> f
+    <span class="kw">global</span> f <span class="cmt">##文件</span>
     <span class="kw">global</span> txt
     <span class="kw">global</span> number_of_occurrence
-    <span class="kw">global</span> max_level_check
-    <span class="kw">global</span> return_check
     reload(sys)
     sys.setdefaultencoding(<span class="str">'utf-8'</span>)
-    flag=<span class="dig">0</span>
-    reload_check=<span class="dig">0</span>
-    world_boss_check=<span class="dig">0</span>
-    raid_check=<span class="dig">0</span>
+    ctr.init()
+    ctr.set_value(<span class="str">'flag'</span>,<span class="dig">0</span>)
+    ctr.set_value(<span class="str">'reload_check'</span>,<span class="dig">0</span>)
+    ctr.set_value(<span class="str">'world_boss_check'</span>,<span class="dig">0</span>)
+    ctr.set_value(<span class="str">'raid_check'</span>,<span class="dig">0</span>)
+    <span class="cmt">#ctr.set_value('raid_check',None)</span>
     number_of_occurrence=<span class="dig">0</span>
-    max_level_check=None
-    return_check=<span class="dig">0</span>
+    ctr.set_value(<span class="str">'max_level_check'</span>,None)
+    ctr.set_value(<span class="str">'return_check'</span>,<span class="dig">0</span>)
     ticks = time.time()
     date=time.strftime(<span class="str">"%Y_%m_%d_%H_%M_%S"</span>, time.localtime(ticks))+<span class="str">'_日誌'</span>
     f = open(date+<span class="str">'.txt'</span>,<span class="str">'w'</span>,<span class="dig">0</span>)
@@ -123,7 +120,6 @@
 
 
 <span class="kw">def</span> Exception_Handling():
-    <span class="kw">global</span> return_check
     <span class="kw">if</span> exists(<img src="1542794650734.png" />,<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1542794659537.png" />)
         <span class="skw">sleep</span>(<span class="dig">3</span>)
@@ -159,11 +155,16 @@
         log_add(<span class="str">'簽到獎勵,點擊關閉'</span>)
         <span class="kw">return</span>
 
+    return_times=ctr.get_value(<span class="str">'return_check'</span>)
+    <span class="cmt">#if exists("1543357612727.png",0.001):</span>
+        <span class="cmt">#click("1543357612727.png")</span>
+        <span class="cmt">#log_add('新星決鬥場獎勵,點擊關閉')</span>
+        <span class="cmt">#return</span>
 
-    <span class="kw">if</span> return_check&gt;<span class="dig">2</span>:
+    <span class="kw">if</span> return_times&gt;<span class="dig">2</span>:
         <span class="skw">click</span>(<img src="1541462696985.png" />)
         log_add(<span class="str">'無法辨識,回上步驟'</span>)
-        return_check=<span class="dig">0</span>
+        ctr.set_value(<span class="str">'return_check'</span>,<span class="dig">0</span>)
         <span class="kw">return</span>
 
 
@@ -173,21 +174,15 @@
 
 
 <span class="kw">def</span> log_add(x):
-    <span class="kw">global</span> return_check
     ticks = time.time()
     txt.append(time.strftime(<span class="str">"%Y/%m/%d %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;'</span>+unicode(x, encoding=<span class="str">'utf-8'</span>)+<span class="str">'\n'</span>)
     txt.setCaretPosition(txt.getDocument().getLength());
     f.write(time.strftime(<span class="str">"%Y/%m/%d %H:%M:%S"</span>, time.localtime(ticks))+<span class="str">'-&gt;'</span>+x+<span class="str">'\n'</span>)
     f.flush
-    return_check=<span class="dig">0</span>
+    ctr.set_value(<span class="str">'return_check'</span>,<span class="dig">0</span>)
 
-<span class="kw">def</span> set_flag(x):
-    <span class="kw">global</span> flag
-    flag=x;
 
 <span class="kw">def</span> Deploy():
-    <span class="kw">global</span> max_level_check
-
     log_add(<span class="str">'檢查(1,1)傭兵'</span>)
     <span class="skw">click</span>(Location(<span class="dig">294</span>, <span class="dig">502</span>))
     Change_mercenary(<span class="dig">294</span>, <span class="dig">502</span>)
@@ -213,7 +208,7 @@
     <span class="cmt">#log_add('檢查(3,1)傭兵')</span>
     <span class="cmt">#click(Location(242, 713))</span>
     <span class="cmt">#Change_mercenary(242, 713)</span>
-    max_level_check=<span class="dig">1</span>
+    ctr.set_value(<span class="str">'raid_check'</span>,<span class="dig">1</span>)
 
 
 <span class="kw">def</span> Change_mercenary(x,y):
@@ -243,8 +238,6 @@
 
 <span class="kw">def</span> Adventure_mode():<span class="cmt">##冒險模式</span>
     <span class="kw">global</span> number_of_occurrence
-    <span class="kw">global</span> max_level_check
-    <span class="kw">global</span> return_check
     ticks = time.time()
     <span class="kw">if</span> exists(Pattern(<img src="1543187454308.png" />).exact(),<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1541462696985.png" />)
@@ -268,9 +261,10 @@
         <span class="skw">sleep</span>(<span class="dig">5</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1540542965316.png" />).exact(),<span class="dig">0.001</span>):
-        <span class="kw">if</span> max_level_check==None:
+        max_level_decision=ctr.get_value(<span class="str">'max_level_check'</span>)
+        <span class="kw">if</span> max_level_decision==None:
             log_add(<span class="str">'冒險模式:肥料皆未滿等'</span>)
-        <span class="kw">if</span> max_level_check!=None:
+        <span class="kw">if</span> max_level_decision!=None:
             log_add(<span class="str">'冒險模式:肥料滿等'</span>)
             Deploy()
         <span class="skw">click</span>(<img src="1541111918637.png" />)
@@ -279,9 +273,10 @@
         <span class="skw">sleep</span>(<span class="dig">15</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1541111878580.png" />).exact(),<span class="dig">0.001</span>):
-        <span class="kw">if</span> max_level_check==None:
+        max_level_decision=ctr.get_value(<span class="str">'max_level_check'</span>)
+        <span class="kw">if</span> max_level_decision==None:
             log_add(<span class="str">'冒險模式:肥料皆未滿等'</span>)
-        <span class="kw">if</span> max_level_check!=None:
+        <span class="kw">if</span> max_level_decision!=None:
             log_add(<span class="str">'冒險模式:肥料滿等'</span>)
             Deploy()
         <span class="skw">click</span>(<img src="1541111918637.png" />)
@@ -290,9 +285,10 @@
         <span class="skw">sleep</span>(<span class="dig">15</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1542468428863.png" />).exact(),<span class="dig">0.001</span>):
-        <span class="kw">if</span> max_level_check==None:
+        max_level_decision=ctr.get_value(<span class="str">'max_level_check'</span>)
+        <span class="kw">if</span> max_level_decision==None:
             log_add(<span class="str">'冒險模式:肥料皆未滿等'</span>)
-        <span class="kw">if</span> max_level_check!=None:
+        <span class="kw">if</span> max_level_decision!=None:
             log_add(<span class="str">'冒險模式:肥料滿等'</span>)
             Deploy()
         <span class="skw">click</span>(<img src="1541111918637.png" />)
@@ -302,8 +298,9 @@
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(Pattern(<img src="1540538755053.png" />).similar(<span class="dig">0.75</span>),<span class="dig">0.001</span>):
-        max_level_check=Region(<span class="dig">651</span>,<span class="dig">598</span>,<span class="dig">875</span>,<span class="dig">193</span>).exists(<img src="1542600578944.png" />,<span class="dig">0.001</span>)
-        <span class="cmt">#max_level_check=Region(773,590,756,191).exists("1542600578944.png",0.001)</span>
+        <span class="cmt">#max_level_check=Region(651,598,875,193).exists("1542600578944.png",0.001)</span>
+        max_level_check=Region(<span class="dig">773</span>,<span class="dig">590</span>,<span class="dig">756</span>,<span class="dig">191</span>).exists(<img src="1542600578944.png" />,<span class="dig">0.001</span>)
+        ctr.set_value(<span class="str">'max_level_check'</span>,max_level_check)
 
         <span class="skw">click</span>(<img src="1540538760800.png" />)
         log_add(<span class="str">'冒險模式:冒險模式對戰完畢,再次對戰'</span>)
@@ -314,7 +311,7 @@
         <span class="kw">if</span> exists(<img src="1540806249159.png" />):
 
             <span class="skw">click</span>(<img src="1540543456633.png" />)
-            set_flag(<span class="dig">1</span>)
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">1</span>)
             log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
             <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1541112406348.png" />).exact(),<span class="dig">0.001</span>):
@@ -322,7 +319,7 @@
         <span class="kw">if</span> exists(<img src="1540806249159.png" />):
 
             <span class="skw">click</span>(<img src="1540543456633.png" />)
-            set_flag(<span class="dig">1</span>)
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">1</span>)
             log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
             <span class="kw">return</span>
     <span class="kw">if</span> exists(Pattern(<img src="1542468361790.png" />).exact(),<span class="dig">0.001</span>):
@@ -330,7 +327,7 @@
         <span class="kw">if</span> exists(<img src="1540806249159.png" />):
 
             <span class="skw">click</span>(<img src="1540543456633.png" />)
-            set_flag(<span class="dig">1</span>)
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">1</span>)
             log_add(<span class="str">'冒險模式:馬蹄耗盡,變更競技場模式'</span>)
             <span class="kw">return</span>
 
@@ -345,8 +342,10 @@
         <span class="kw">return</span>
 
     <span class="kw">else</span>:
-        return_check+=<span class="dig">1</span>
-        <span class="kw">print</span>(<span class="str">'冒險模式:無法辨識次數:'</span>+str(return_check))
+        return_times=ctr.get_value(<span class="str">'return_check'</span>)
+        return_times+=<span class="dig">1</span>
+        ctr.set_value(<span class="str">'return_check'</span>,return_times)
+        <span class="kw">print</span>(<span class="str">'冒險模式:無法辨識次數:'</span>+str(return_times))
         <span class="kw">return</span>
 
 
@@ -371,14 +370,14 @@
     <span class="kw">if</span> exists(Pattern(<img src="1540545300325.png" />).exact(),<span class="dig">0.001</span>):
         <span class="skw">sleep</span>(<span class="dig">10</span>)
         <span class="skw">click</span>(<img src="1540545324733.png" />)
-        set_flag(<span class="dig">2</span>)
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">2</span>)
         log_add(<span class="str">'競技場模式:指揮劍耗盡,更改為新星競技場模式'</span>)
         <span class="kw">return</span>
 
     <span class="kw">if</span> exists(<img src="1541337347773.png" />,<span class="dig">0.001</span>):
         <span class="skw">sleep</span>(<span class="dig">10</span>)
         <span class="skw">click</span>(<img src="1540545324733.png" />)
-        set_flag(<span class="dig">2</span>)
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">2</span>)
         log_add(<span class="str">'競技場模式:競技場模式關閉,更改為新星競技場模式'</span>)
         <span class="kw">return</span>
 
@@ -437,7 +436,7 @@
 
     <span class="kw">if</span> exists(Pattern(<img src="1540554945534.png" />).exact(),<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1541462696985.png" />)
-        set_flag(<span class="dig">0</span>);
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">0</span>);
         log_add(<span class="str">'新星競技場模式:指揮劍耗盡,更改為冒險模式'</span>)
         <span class="kw">return</span>
 
@@ -463,7 +462,7 @@
         <span class="skw">sleep</span>(<span class="dig">10</span>)
         <span class="skw">click</span>(<img src="1542115623560.png" />)
 
-        set_flag(<span class="dig">0</span>)
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">0</span>)
         log_add(<span class="str">'新星競技場模式:新星競技場模式關閉,更改為冒險模式'</span>)
         <span class="kw">return</span>
 
@@ -483,9 +482,6 @@
         log_add(<span class="str">'新星競技場模式:無法辨識,回上步驟'</span>)
 
 <span class="kw">def</span> Co_op_raid():
-
-    <span class="kw">global</span> raid_check
-
     <span class="kw">if</span> exists(<img src="1543186174586.png" />,<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1543186208548.png" />)
         log_add(<span class="str">'協力征討戰模式:處於戰役模式入場畫面,點擊返回'</span>)
@@ -502,18 +498,29 @@
         log_add(<span class="str">'協力征討戰模式:處於主畫面結束遊戲,點擊取消'</span>)
         <span class="kw">return</span>
 
-    <span class="kw">if</span> exists(Pattern(<img src="1541464191081.png" />).similar(<span class="dig">0.89</span>),<span class="dig">0.001</span>):
-        <span class="skw">click</span>(<img src="1541464191081.png" />)
-        log_add(<span class="str">'協力征討戰模式:主畫面點擊進入挑戰'</span>)
-        <span class="kw">return</span>
+
     <span class="kw">if</span> exists(<img src="1541459381777.png" />,<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1541459381777.png" />)
         log_add(<span class="str">'協力征討戰模式:點擊協力征討'</span>)
         <span class="kw">return</span>
+    <span class="kw">if</span> exists(Pattern(<img src="1541464191081.png" />).similar(<span class="dig">0.89</span>),<span class="dig">0.001</span>):
+        <span class="skw">click</span>(<img src="1541464191081.png" />)
+        log_add(<span class="str">'協力征討戰模式:主畫面點擊進入挑戰'</span>)
+        <span class="kw">return</span>
+    <span class="kw">if</span> exists(Pattern(<img src="1543359173538.png" />).exact(),<span class="dig">0.001</span>):
+        <span class="skw">click</span>(Pattern(<img src="1543359173538.png" />).exact())
+        log_add(<span class="str">'協力征討戰模式:主畫面點擊進入挑戰'</span>)
+        <span class="kw">return</span>
+
+    <span class="kw">if</span> exists(Pattern(<img src="1542408702575.png" />).similar(<span class="dig">0.95</span>),<span class="dig">0.001</span>):
+        <span class="skw">click</span>(Pattern(<img src="1542408702575.png" />).similar(<span class="dig">0.90</span>))
+        log_add(<span class="str">'協力征討戰模式:主畫面點擊進入挑戰'</span>)
+        <span class="kw">return</span>
+
     <span class="kw">if</span> exists(Pattern(<img src="1541464797738.png" />).exact(),<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1541462696985.png" />)
-        set_flag(<span class="dig">4</span>);
-        raid_check=<span class="dig">1</span>
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">4</span>);
+        ctr.set_value(<span class="str">'raid_check'</span>,<span class="dig">1</span>);
         log_add(<span class="str">'協力征討戰模式:征討號角耗盡,更改為世界王模式'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1541640882819.png" />,<span class="dig">0.001</span>):
@@ -521,8 +528,8 @@
         <span class="skw">wait</span>(<span class="dig">1</span>)
         <span class="skw">click</span>(<img src="1541462696985.png" />)
         <span class="skw">wait</span>(<span class="dig">1</span>)
-        set_flag(<span class="dig">4</span>);
-        raid_check=<span class="dig">1</span>
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">4</span>);
+        ctr.set_value(<span class="str">'raid_check'</span>,<span class="dig">1</span>);
         log_add(<span class="str">'協力征討戰模式:征討號角耗盡,更改為世界王模式'</span>)
         <span class="kw">return</span>
 
@@ -586,7 +593,6 @@
         log_add(<span class="str">'協力征討戰模式:無法辨識,回上步驟'</span>)
 
 <span class="kw">def</span> boss_mode():
-    <span class="kw">global</span> world_boss_check
     <span class="kw">if</span> exists(<img src="1542347246901.png" />,<span class="dig">0.001</span>):
         <span class="skw">click</span>(<img src="1541462696985.png" />)
         log_add(<span class="str">'協力征討戰模式:處於主畫面對戰,點擊返回'</span>)
@@ -663,35 +669,39 @@
         <span class="kw">if</span> exists(<img src="1542347535388.png" />):
             <span class="skw">click</span>(<img src="1542347546360.png" />)
             <span class="skw">wait</span>(<span class="dig">3</span>)
-            set_flag(<span class="dig">1</span>);
-            world_boss_check=<span class="dig">1</span>
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">1</span>);
+            ctr.set_value(<span class="str">'world_boss_check'</span>,<span class="dig">1</span>)
             log_add(<span class="str">'世界王模式:戰鬥次數耗盡,更改為競技場模式'</span>)
     <span class="kw">else</span>:
         <span class="skw">click</span>(<img src="1541462696985.png" />)
         log_add(<span class="str">'世界王模式:無法辨識,回上步驟'</span>)
 
 <span class="kw">def</span> reload_app():
-    <span class="kw">global</span> reload_check
-    <span class="kw">if</span> exists(<img src="1542346850592.png" />,<span class="dig">0.001</span>) <span class="kw">and</span> reload_check==<span class="dig">0</span>:
+    reload_decision=ctr.get_value(<span class="str">'reload_check'</span>)
+    <span class="kw">if</span> exists(<img src="1542346850592.png" />,<span class="dig">0.001</span>) <span class="kw">and</span> reload_decision==<span class="dig">0</span>:
         log_add(<span class="str">'重啟模式:等候180秒後開始重啟'</span>)
-        <span class="skw">sleep</span>(<span class="dig">180</span>)
+        <span class="skw">sleep</span>(<span class="dig">60</span>)
+        log_add(<span class="str">'重啟模式:等候120秒後開始重啟'</span>)
+        <span class="skw">sleep</span>(<span class="dig">60</span>)
+        log_add(<span class="str">'重啟模式:等候60秒後開始重啟'</span>)
+        <span class="skw">sleep</span>(<span class="dig">60</span>)
         <span class="skw">click</span>(Location(<span class="dig">559</span>, <span class="dig">9</span>))
         log_add(<span class="str">'重啟模式:關閉程式'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1542346912153.png" />,<span class="dig">0.001</span>):
-        reload_check=<span class="dig">1</span>
+        ctr.set_value(<span class="str">'reload_check'</span>,<span class="dig">1</span>)
         <span class="skw">wait</span>(<span class="dig">3</span>)
         <span class="skw">click</span>(<img src="1542346912153.png" />)
         log_add(<span class="str">'重啟模式:啟動程式'</span>)
         <span class="skw">sleep</span>(<span class="dig">30</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1542346980288.png" />,<span class="dig">0.001</span>):
-        set_flag(<span class="dig">1</span>)
-        log_add(<span class="str">'重啟模式:重啟完成,進入競技場模式'</span>)
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">3</span>)
+        log_add(<span class="str">'重啟模式:重啟完成,進入協力爭討戰模式'</span>)
         <span class="kw">return</span>
     <span class="kw">if</span> exists(<img src="1540537145861.png" />,<span class="dig">0.001</span>): <span class="cmt">##主畫面的最近戰役</span>
-        set_flag(<span class="dig">1</span>)
-        log_add(<span class="str">'重啟模式:重啟完成,進入競技場模式'</span>)
+        ctr.set_value(<span class="str">'flag'</span>,<span class="dig">3</span>)
+        log_add(<span class="str">'重啟模式:重啟完成,進入協力爭討戰模式'</span>)
         <span class="kw">return</span>
     <span class="kw">else</span>:
         <span class="skw">click</span>(<img src="1541462696985.png" />)
@@ -706,39 +716,34 @@
 <span class="kw">if</span> __name__ == <span class="str">'__main__'</span>:
     initial()
     <span class="kw">while</span> <span class="dig">1</span>:
-        <span class="kw">global</span> flag
-        <span class="kw">global</span> reload_check
-        <span class="kw">global</span> world_boss_check
-        <span class="kw">global</span> raid_check
-        <span class="kw">print</span> flag
         Exception_Handling()
         curTime = datetime.now()
-        <span class="kw">if</span> curTime.hour==<span class="dig">4</span> <span class="kw">and</span> reload_check==<span class="dig">0</span>:
-            set_flag(<span class="dig">99</span>)
-            <span class="cmt">#log_add('重啟模式:啟動重啟模式')</span>
-        <span class="kw">if</span> curTime.hour==<span class="dig">5</span> <span class="kw">and</span> raid_check==<span class="dig">0</span>:
-            set_flag(<span class="dig">3</span>)
-            <span class="cmt">#log_add('協力征討戰模式:定時協力征討戰模式進行中')</span>
-        <span class="kw">if</span> curTime.hour==<span class="dig">6</span> <span class="kw">and</span> world_boss_check==<span class="dig">0</span>:
-            set_flag(<span class="dig">4</span>)
-            <span class="cmt">#log_add('世界王模式:定時世界王模式進行中')</span>
-
-        <span class="kw">if</span> flag==<span class="dig">0</span>:
+        reload_decision=ctr.get_value(<span class="str">'reload_check'</span>)
+        world_boss_decision=ctr.get_value(<span class="str">'world_boss_check'</span>)
+        raid_decision=ctr.get_value(<span class="str">'raid_check'</span>)
+        <span class="kw">if</span> curTime.hour==<span class="dig">11</span> <span class="kw">and</span> reload_decision==<span class="dig">0</span>:
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">99</span>)
+        <span class="kw">if</span> curTime.hour==<span class="dig">51</span> <span class="kw">and</span> raid_decision==<span class="dig">0</span>:
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">3</span>)
+        <span class="kw">if</span> curTime.hour==<span class="dig">67</span> <span class="kw">and</span> world_boss_decision==<span class="dig">0</span>:
+            ctr.set_value(<span class="str">'flag'</span>,<span class="dig">4</span>)
+        mode=ctr.get_value(<span class="str">'flag'</span>)
+        <span class="kw">if</span> mode==<span class="dig">0</span>:
             Adventure_mode();
 
-        <span class="kw">if</span> flag==<span class="dig">1</span>:
+        <span class="kw">if</span> mode==<span class="dig">1</span>:
             Arena_mode()
 
-        <span class="kw">if</span> flag==<span class="dig">2</span>:
+        <span class="kw">if</span> mode==<span class="dig">2</span>:
             New_star_mode()
 
-        <span class="kw">if</span> flag==<span class="dig">3</span>:
+        <span class="kw">if</span> mode==<span class="dig">3</span>:
             Co_op_raid()
 
-        <span class="kw">if</span> flag==<span class="dig">4</span>:
+        <span class="kw">if</span> mode==<span class="dig">4</span>:
             boss_mode()
 
-        <span class="kw">if</span> flag==<span class="dig">99</span>:
+        <span class="kw">if</span> mode==<span class="dig">99</span>:
             reload_app()
 </pre>
 </body>

@@ -1,5 +1,5 @@
 ##1.修改冒險模式外的3次返回偵錯機制
-
+from sikuli import *
 from javax.swing import JFrame, JLabel, JButton, JTextField, JTextArea, JScrollPane
 from java.awt import FlowLayout
 from java.awt import *
@@ -8,28 +8,25 @@ from datetime import datetime
 import time
 import sys
 import random
-
+import controller as ctr
+#reload(controller)
+#from controller import * 
 
 def initial():
-    global flag
-    global reload_check
-    global world_boss_check
-    global raid_check
-    global ticks
-    global f
+    global f ##文件
     global txt
     global number_of_occurrence
-    global max_level_check
-    global return_check
     reload(sys)
     sys.setdefaultencoding('utf-8')
-    flag=0
-    reload_check=0
-    world_boss_check=0
-    raid_check=0
+    ctr.init()
+    ctr.set_value('flag',0)
+    ctr.set_value('reload_check',0)
+    ctr.set_value('world_boss_check',0)
+    ctr.set_value('raid_check',0)
+    #ctr.set_value('raid_check',None)
     number_of_occurrence=0
-    max_level_check=None
-    return_check=0
+    ctr.set_value('max_level_check',None)
+    ctr.set_value('return_check',0)
     ticks = time.time()
     date=time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime(ticks))+'_日誌'
     f = open(date+'.txt','w',0)
@@ -51,7 +48,6 @@ def initial():
 
 
 def Exception_Handling():
-    global return_check
     if exists("1542794650734.png",0.001):
         click("1542794659537.png")
         sleep(3)
@@ -87,11 +83,16 @@ def Exception_Handling():
         log_add('簽到獎勵,點擊關閉')
         return
         
-    
-    if return_check>2:
+    return_times=ctr.get_value('return_check')
+    #if exists("1543357612727.png",0.001):
+        #click("1543357612727.png")
+        #log_add('新星決鬥場獎勵,點擊關閉')
+        #return
+        
+    if return_times>2:
         click("1541462696985.png")
         log_add('無法辨識,回上步驟')
-        return_check=0
+        ctr.set_value('return_check',0)
         return
         
          
@@ -101,21 +102,15 @@ def Exception_Handling():
 
 
 def log_add(x):
-    global return_check 
     ticks = time.time()
     txt.append(time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(ticks))+'->'+unicode(x, encoding='utf-8')+'\n') 
     txt.setCaretPosition(txt.getDocument().getLength()); 
     f.write(time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(ticks))+'->'+x+'\n')
     f.flush
-    return_check=0
+    ctr.set_value('return_check',0)
     
-def set_flag(x):
-    global flag 
-    flag=x;
 
 def Deploy():
-    global max_level_check
-    
     log_add('檢查(1,1)傭兵')
     click(Location(294, 502))
     Change_mercenary(294, 502)
@@ -141,7 +136,7 @@ def Deploy():
     #log_add('檢查(3,1)傭兵')
     #click(Location(242, 713))
     #Change_mercenary(242, 713)
-    max_level_check=1
+    ctr.set_value('raid_check',1)
             
     
 def Change_mercenary(x,y):   
@@ -171,8 +166,6 @@ def Change_mercenary(x,y):
 
 def Adventure_mode():##冒險模式
     global number_of_occurrence 
-    global max_level_check
-    global return_check
     ticks = time.time()
     if exists(Pattern("1543187454308.png").exact(),0.001):
         click("1541462696985.png")
@@ -196,9 +189,10 @@ def Adventure_mode():##冒險模式
         sleep(5)
         return
     if exists(Pattern("1540542965316.png").exact(),0.001):
-        if max_level_check==None:
+        max_level_decision=ctr.get_value('max_level_check')
+        if max_level_decision==None:
             log_add('冒險模式:肥料皆未滿等')
-        if max_level_check!=None:
+        if max_level_decision!=None:
             log_add('冒險模式:肥料滿等')
             Deploy()
         click("1541111918637.png")
@@ -207,9 +201,10 @@ def Adventure_mode():##冒險模式
         sleep(15)
         return
     if exists(Pattern("1541111878580.png").exact(),0.001):
-        if max_level_check==None:
+        max_level_decision=ctr.get_value('max_level_check')
+        if max_level_decision==None:
             log_add('冒險模式:肥料皆未滿等')
-        if max_level_check!=None:
+        if max_level_decision!=None:
             log_add('冒險模式:肥料滿等')
             Deploy()
         click("1541111918637.png")
@@ -218,9 +213,10 @@ def Adventure_mode():##冒險模式
         sleep(15)
         return 
     if exists(Pattern("1542468428863.png").exact(),0.001):
-        if max_level_check==None:
+        max_level_decision=ctr.get_value('max_level_check')
+        if max_level_decision==None:
             log_add('冒險模式:肥料皆未滿等')
-        if max_level_check!=None:
+        if max_level_decision!=None:
             log_add('冒險模式:肥料滿等')
             Deploy()
         click("1541111918637.png")
@@ -230,8 +226,9 @@ def Adventure_mode():##冒險模式
         return 
         
     if exists(Pattern("1540538755053.png").similar(0.75),0.001):
-        max_level_check=Region(651,598,875,193).exists("1542600578944.png",0.001)
-        #max_level_check=Region(773,590,756,191).exists("1542600578944.png",0.001)
+        #max_level_check=Region(651,598,875,193).exists("1542600578944.png",0.001)
+        max_level_check=Region(773,590,756,191).exists("1542600578944.png",0.001)
+        ctr.set_value('max_level_check',max_level_check)
 
         click("1540538760800.png")
         log_add('冒險模式:冒險模式對戰完畢,再次對戰')
@@ -242,7 +239,7 @@ def Adventure_mode():##冒險模式
         if exists("1540806249159.png"):
             
             click("1540543456633.png")
-            set_flag(1)
+            ctr.set_value('flag',1)
             log_add('冒險模式:馬蹄耗盡,變更競技場模式')
             return
     if exists(Pattern("1541112406348.png").exact(),0.001):
@@ -250,7 +247,7 @@ def Adventure_mode():##冒險模式
         if exists("1540806249159.png"):
             
             click("1540543456633.png")
-            set_flag(1)
+            ctr.set_value('flag',1)
             log_add('冒險模式:馬蹄耗盡,變更競技場模式')
             return
     if exists(Pattern("1542468361790.png").exact(),0.001):
@@ -258,7 +255,7 @@ def Adventure_mode():##冒險模式
         if exists("1540806249159.png"):
             
             click("1540543456633.png")
-            set_flag(1)
+            ctr.set_value('flag',1)
             log_add('冒險模式:馬蹄耗盡,變更競技場模式')
             return
 
@@ -273,8 +270,10 @@ def Adventure_mode():##冒險模式
         return
     
     else:        
-        return_check+=1
-        print('冒險模式:無法辨識次數:'+str(return_check))
+        return_times=ctr.get_value('return_check')
+        return_times+=1
+        ctr.set_value('return_check',return_times)
+        print('冒險模式:無法辨識次數:'+str(return_times))
         return
                
 
@@ -299,14 +298,14 @@ def Arena_mode():  ##競技場模式
     if exists(Pattern("1540545300325.png").exact(),0.001):
         sleep(10)
         click("1540545324733.png")
-        set_flag(2)
+        ctr.set_value('flag',2)
         log_add('競技場模式:指揮劍耗盡,更改為新星競技場模式')
         return
 
     if exists("1541337347773.png",0.001):
         sleep(10)
         click("1540545324733.png")
-        set_flag(2)
+        ctr.set_value('flag',2)
         log_add('競技場模式:競技場模式關閉,更改為新星競技場模式')
         return
         
@@ -365,7 +364,7 @@ def New_star_mode():
         
     if exists(Pattern("1540554945534.png").exact(),0.001):
         click("1541462696985.png")
-        set_flag(0);
+        ctr.set_value('flag',0);
         log_add('新星競技場模式:指揮劍耗盡,更改為冒險模式')
         return
         
@@ -391,7 +390,7 @@ def New_star_mode():
         sleep(10)
         click("1542115623560.png")
         
-        set_flag(0)
+        ctr.set_value('flag',0)
         log_add('新星競技場模式:新星競技場模式關閉,更改為冒險模式')
         return
     
@@ -411,9 +410,6 @@ def New_star_mode():
         log_add('新星競技場模式:無法辨識,回上步驟')
 
 def Co_op_raid():
-
-    global raid_check
-
     if exists("1543186174586.png",0.001):
         click("1543186208548.png")
         log_add('協力征討戰模式:處於戰役模式入場畫面,點擊返回')
@@ -429,19 +425,30 @@ def Co_op_raid():
         click("1542347374692.png")
         log_add('協力征討戰模式:處於主畫面結束遊戲,點擊取消')
         return 
-     
-    if exists(Pattern("1541464191081.png").similar(0.89),0.001):
-        click("1541464191081.png")
-        log_add('協力征討戰模式:主畫面點擊進入挑戰')
-        return
+
+        
     if exists("1541459381777.png",0.001):
         click("1541459381777.png")
         log_add('協力征討戰模式:點擊協力征討')
         return
+    if exists(Pattern("1541464191081.png").similar(0.89),0.001):
+        click("1541464191081.png")
+        log_add('協力征討戰模式:主畫面點擊進入挑戰')
+        return 
+    if exists(Pattern("1543359173538.png").exact(),0.001):
+        click(Pattern("1543359173538.png").exact())
+        log_add('協力征討戰模式:主畫面點擊進入挑戰')
+        return 
+        
+    if exists(Pattern("1542408702575.png").similar(0.95),0.001):
+        click(Pattern("1542408702575.png").similar(0.90))
+        log_add('協力征討戰模式:主畫面點擊進入挑戰')
+        return 
+        
     if exists(Pattern("1541464797738.png").exact(),0.001):        
         click("1541462696985.png")
-        set_flag(4);
-        raid_check=1
+        ctr.set_value('flag',4);
+        ctr.set_value('raid_check',1);
         log_add('協力征討戰模式:征討號角耗盡,更改為世界王模式')
         return
     if exists("1541640882819.png",0.001):
@@ -449,8 +456,8 @@ def Co_op_raid():
         wait(1)
         click("1541462696985.png")
         wait(1)
-        set_flag(4);
-        raid_check=1
+        ctr.set_value('flag',4);
+        ctr.set_value('raid_check',1);
         log_add('協力征討戰模式:征討號角耗盡,更改為世界王模式')
         return
         
@@ -514,7 +521,6 @@ def Co_op_raid():
         log_add('協力征討戰模式:無法辨識,回上步驟')
 
 def boss_mode():
-    global world_boss_check 
     if exists("1542347246901.png",0.001):
         click("1541462696985.png")
         log_add('協力征討戰模式:處於主畫面對戰,點擊返回')
@@ -591,35 +597,39 @@ def boss_mode():
         if exists("1542347535388.png"):
             click("1542347546360.png")
             wait(3)
-            set_flag(1);
-            world_boss_check=1
+            ctr.set_value('flag',1);
+            ctr.set_value('world_boss_check',1)
             log_add('世界王模式:戰鬥次數耗盡,更改為競技場模式')
     else:
         click("1541462696985.png")
         log_add('世界王模式:無法辨識,回上步驟')
 
 def reload_app():
-    global reload_check
-    if exists("1542346850592.png",0.001) and reload_check==0:
+    reload_decision=ctr.get_value('reload_check')
+    if exists("1542346850592.png",0.001) and reload_decision==0:
         log_add('重啟模式:等候180秒後開始重啟')
-        sleep(180)
+        sleep(60)
+        log_add('重啟模式:等候120秒後開始重啟')
+        sleep(60)
+        log_add('重啟模式:等候60秒後開始重啟')
+        sleep(60)
         click(Location(559, 9))
         log_add('重啟模式:關閉程式')
         return
     if exists("1542346912153.png",0.001):
-        reload_check=1
+        ctr.set_value('reload_check',1)
         wait(3)
         click("1542346912153.png")
         log_add('重啟模式:啟動程式')
         sleep(30)
         return
     if exists("1542346980288.png",0.001):
-        set_flag(1)
-        log_add('重啟模式:重啟完成,進入競技場模式')
+        ctr.set_value('flag',3)
+        log_add('重啟模式:重啟完成,進入協力爭討戰模式')
         return
     if exists("1540537145861.png",0.001): ##主畫面的最近戰役
-        set_flag(1)
-        log_add('重啟模式:重啟完成,進入競技場模式')
+        ctr.set_value('flag',3)
+        log_add('重啟模式:重啟完成,進入協力爭討戰模式')
         return
     else:
         click("1541462696985.png")
@@ -634,39 +644,34 @@ def reload_app():
 if __name__ == '__main__':
     initial() 
     while 1: 
-        global flag
-        global reload_check
-        global world_boss_check
-        global raid_check
-        print flag
         Exception_Handling()
         curTime = datetime.now()
-        if curTime.hour==4 and reload_check==0:
-            set_flag(99)
-            #log_add('重啟模式:啟動重啟模式')
-        if curTime.hour==5 and raid_check==0:
-            set_flag(3)
-            #log_add('協力征討戰模式:定時協力征討戰模式進行中')
-        if curTime.hour==6 and world_boss_check==0:
-            set_flag(4)
-            #log_add('世界王模式:定時世界王模式進行中')
-
-        if flag==0:
+        reload_decision=ctr.get_value('reload_check')
+        world_boss_decision=ctr.get_value('world_boss_check')
+        raid_decision=ctr.get_value('raid_check')
+        if curTime.hour==11 and reload_decision==0:
+            ctr.set_value('flag',99)
+        if curTime.hour==51 and raid_decision==0:
+            ctr.set_value('flag',3)
+        if curTime.hour==67 and world_boss_decision==0:
+            ctr.set_value('flag',4)
+        mode=ctr.get_value('flag')
+        if mode==0:
             Adventure_mode();
 
-        if flag==1:
+        if mode==1:
             Arena_mode()
             
-        if flag==2:
+        if mode==2:
             New_star_mode()
 
-        if flag==3:
+        if mode==3:
             Co_op_raid()
 
-        if flag==4:
+        if mode==4:
             boss_mode()
 
-        if flag==99:
+        if mode==99:
             reload_app()
 
             
